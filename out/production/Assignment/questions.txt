@@ -1,0 +1,12 @@
+Question : What is the name of the German airline?
+Answer : Lufthansa
+Question : In which European city can you find the home of Anne Frank?
+Answer : Amsterdam
+Question : How many stars has the American flag got?
+Answer : Fifty
+Question : How long is the Great Wall of China?
+Answer : 4000 miles
+Question : Who invented Ferrari?
+Answer : Enzo Ferrari
+Question : According to the Bible, who was the first murderer?
+Answer : Cain
