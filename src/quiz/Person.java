@@ -1,5 +1,6 @@
 package quiz;
 
+
 import java.io.Serializable;
 
 abstract public class Person implements Serializable {
@@ -13,4 +14,5 @@ abstract public class Person implements Serializable {
         this.age = age;
         this.eMail = eMail;
     }
+   abstract public void player1 ();
 }

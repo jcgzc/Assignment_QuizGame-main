@@ -1,213 +1,202 @@
 package quiz;
 
-
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
 import java.io.*;
-import java.nio.file.Paths;
-import java.nio.file.*;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Scanner;
 
-
-//Skapa en klass som håller reda på frågor och svaralternativ och vilket svarsalternativ som är rätt.
 public class Quiz implements Serializable {
 
     String question;
-    String answer1;
-    String answer2;
-    String answer3;
+    String answer = "ja";
 
+    String answerA = "A";
+    String answerB = "B";
+    String answerC = "C";
 
-    public Quiz(String newQuestion, String newAnswer1, String newAnswer2, String newAnswer3) {
-        this.question = newQuestion;
-        this.answer1 = newAnswer1;
-        this.answer2 = newAnswer2;
-        this.answer3 = newAnswer3;
-
+    public Quiz(String question, String answer) {
+        this.question = question;
+        this.answer = answer;
     }
 
-    static LinkedList<Quiz> testList = new LinkedList<>();
-    //Ska också innehålla en metod som ska läsa in de serialiserade frågeobjekten från en fil.
-
-    public static void startGame() throws Exception {
-
-
-        Quiz q1 = new Quiz("Hur många landskap har Sverige?", "20 stycken.", "25 stycken.", "28 stycken.");
-        Quiz q2 = new Quiz("Vilket av dessa flygbolag är tyskt?", "Lufthansa", "SAS", "WizzAir");
-        Quiz q3 = new Quiz("Hur gammal var Einstein när han dog?", "56 år gammal.", "66 år gammal.", "76 år gammal.");
-        Quiz q4 = new Quiz("Hur många länder ingår i EU?", "26 stycken.", "27 stycken.", "28 stycken.");
-        Quiz q5 = new Quiz("Hur gammalt är JAVA?", "20 år gammalt.", "30 år gammalt.", "40 år gammalt.");
-        Quiz q6 = new Quiz("Hur stort är Sverige till ytan?", "450 295 km².", "400 295 km².", "445 295 km².");
-
-
-        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("questions_ser.txt"));
-
-        out.writeObject(q1);
-        out.writeObject(q2);
-        out.writeObject(q3);
-        out.writeObject(q4);
-        out.writeObject(q5);
-        out.writeObject(q6);
-        //out.writeObject(testList.get(0));
-
-        out.flush();
-        out.close();
-
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream("questions_ser.txt"));
-
-        Quiz a1 = (Quiz) in.readObject();
-        Quiz a2 = (Quiz) in.readObject();
-        Quiz a3 = (Quiz) in.readObject();
-        Quiz a4 = (Quiz) in.readObject();
-        Quiz a5 = (Quiz) in.readObject();
-        Quiz a6 = (Quiz) in.readObject();
-        //Quiz a7 = (Quiz) in.readObject();
-        testList.add(a1);
-        testList.add(a2);
-        testList.add(a3);
-        testList.add(a4);
-        testList.add(a5);
-        testList.add(a6);
-
-        in.close();
-
-
-        Scanner input = new Scanner(System.in);
-        System.out.println(a1.question);
-        System.out.println("1. " + a1.answer1);
-        System.out.println("2. " + a1.answer2);
-        System.out.println("3. " + a1.answer3);
-        System.out.println("Skriv svaret här: ");
-
-
-        int nr2 = input.nextInt();
-        if (nr2 == 2) {
-            System.out.println("Rätt svar");
-        } else {
-            System.out.println("Fel svar ");
-        }
-
-
-
+    public Quiz() {
     }
 
-    public static void startMenu() throws IOException, Exception {
+    LinkedList<String> questionList = new LinkedList<String>();
+    Scanner sc = new Scanner(System.in);
+
+    void playGame() throws Exception {
+
+        readObject();
+
+        for (int i = 0; i < questionList.size(); i += 2) {
+            System.out.println(questionList.get(i));
+            String userInput = sc.nextLine();
 
 
-        System.out.println("-------------------------------------------");
-        System.out.println("Tryck in en siffra för vad du vill göra");
-        System.out.println("-------------------------------------------");
-        System.out.println(" 1. Spela spelet ");
-        System.out.println(" 2. Visa en lista med frågorna ");
-        System.out.println(" 3. Lägg till en fråga ");
-        System.out.println(" 4. Ta bort en fråga ");
-        System.out.println(" 5. Redigera en fråga ");
-        System.out.println("-------------------------------------------");
 
-        Scanner input = new Scanner(System.in);
-        int nr = input.nextInt();
 
-        switch (nr) {
-            case 1:
-                Player.createNewPlayer();
-                startGame();
-                break;
-            case 2:
-
-                questionsFile();
-                startMenu();
-
-                break;
-            case 3:
-
-                addQuestion();
-                startMenu();
-
-                break;
-            case 4:
-                removeQuestion();
-                startMenu();
-                break;
-            case 5:
-                manageQuestions();
-                startMenu();
-
-                break;
-            default:
+            if (userInput.equalsIgnoreCase(questionList.get(i + 1))) {
+                System.out.println("Du svarade rätt! :) \n");
+            } else {
+                System.out.println("Du svarade fel :( \n");
+            }
         }
     }
 
+    void showList() {
 
-    public static void questionsFile() throws IOException, Exception {
+        for (int i = 0; i < questionList.size(); i += 2) {
+            System.out.println(questionList.get(i));
 
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream("questions_ser.txt"));
-
-        Quiz a1 = (Quiz) in.readObject();
-        Quiz a2 = (Quiz) in.readObject();
-        Quiz a3 = (Quiz) in.readObject();
-        Quiz a4 = (Quiz) in.readObject();
-        Quiz a5 = (Quiz) in.readObject();
-        Quiz a6 = (Quiz) in.readObject();
-
-
-        testList.add(a1);
-        testList.add(a2);
-        testList.add(a3);
-        testList.add(a4);
-        testList.add(a5);
-        testList.add(a6);
-
-        in.close();
-
-
-        LinkedList<Quiz> questions = testList;
-
-        Collections.shuffle(questions);
-        questions.forEach(System.out::println);
+        }
     }
 
-    @Override
-    public String toString() {
-        return "Question= " + question
-                ;
-    }
+    void addQuestion() {
 
-    public static void addQuestion() {
-        System.out.println("Lägg till fråga och svarsalternativ");
-
-        Scanner sc = new Scanner(System.in);
-
+        System.out.println("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ");
         System.out.println("Lägg till din fråga");
-        String questionAdd = sc.nextLine();
-        System.out.println("Lägg ditt första svar");
-        String answer1Add = sc.nextLine();
-        System.out.println("Lägg ditt andra svar");
-        String answer2Add = sc.nextLine();
-        System.out.println("Lägg ditt tredje svar");
-        String answer3Add = sc.nextLine();
+        System.out.println("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ");
 
+        System.out.println("Skriv in din fråga här: ");
+        String addQ = sc.nextLine();
 
-        testList.add(new Quiz(questionAdd,answer1Add,answer2Add,answer3Add));
+        System.out.println("Skriv in svarsalternativ 1:");
+        String answer1 = sc.nextLine();
+
+        System.out.println("Är detta svar rätt?");
+        String addA1 = sc.nextLine(); // ja / nej
+
+        System.out.println("Skriv in svarsalternativ 2:");
+        String answer2 = sc.nextLine();
+
+        System.out.println("Är detta svar rätt?");
+        String addA2 = sc.nextLine();
+
+        System.out.println("Skriv in svarsalternativ 3:");
+        String answer3 = sc.nextLine();
+
+        System.out.println("Är detta svar rätt?");
+        String addA3 = sc.nextLine();
+
+        questionList.add(addQ + "\nA) " + answer1 + "\nB) " + answer2 + "\nC) " + answer3 + "\n");
+
+        if (addA1.equalsIgnoreCase(answer)) {
+            questionList.add(answerA);
+        }
+        if (addA2.equalsIgnoreCase(answer)) {
+            questionList.add(answerB);
+        }
+        if (addA3.equalsIgnoreCase(answer)) {
+            questionList.add(answerC);
+        }
+
 
     }
 
-    public static void removeQuestion(){
+    void removeQuestion() {
 
-        testList.remove();
+        System.out.println("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ");
+        System.out.println("Ta bort en fråga");
+        System.out.println("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ");
+
+
+        for (int i = 0; i < questionList.size(); i += 2) {
+            System.out.println(i + ". " + questionList.get(i));// varannat element [0], [2]
+
+        }
+        System.out.println("Vilken fråga vill du ta bort? \n");
+        int removeQ = sc.nextInt();
+        sc.nextLine();
+
+        for (int i = 0; i < 2; i++) {
+            questionList
+                    .remove(removeQ);
+
+        }
+    }
+
+    void editQuestion() {
+
+        System.out.println("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ");
+        System.out.println("Redigera en fråga");
+        System.out.println("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ");
+        System.out.println("Vilken fråga vill du redigera? \n");
+
+        for (int i = 0; i < questionList.size(); i++) {
+            System.out.println(i + ". " + questionList.get(i));
+        }
+
+        System.out.println("Vilken fråga vill du redigera? ");
+        int editQ = sc.nextInt();
+        sc.nextLine();
+        System.out.println("Vilken svar vill du redigera? ");
+        int editA = sc.nextInt();
+        sc.nextLine();
+        System.out.println("Redigera din fråga: ");
+        String modifyQ = sc.nextLine();
+
+        System.out.println("Skriv in svarsalternativ 1:");
+        String modifyA1 = sc.nextLine();
+
+        System.out.println("Är detta svar rätt?");
+        String setA1 = sc.nextLine(); // ja / nej
+
+        System.out.println("Skriv in svarsalternativ 2:");
+        String modifyA2 = sc.nextLine();
+
+        System.out.println("Är detta svar rätt?");
+        String setA2 = sc.nextLine();
+
+        System.out.println("Skriv in svarsalternativ 3:");
+        String modifyA3 = sc.nextLine();
+
+        System.out.println("Är detta svar rätt?");
+        String setA3 = sc.nextLine();
+
+        questionList.set(editQ, modifyQ + "\nA) "  + modifyA1 + "\nB) "+ modifyA2 + "\nC) "+ modifyA3 + "\n ");
+
+        if (setA1.equals(answer)) {
+            questionList.set(editA,modifyA1);
+        }
+        if (setA2.equals(answer)) {
+            questionList.set(editA,modifyA2);
+        }
+        if (setA3.equals(answer)) {
+            questionList.set(editA,modifyA3);
+        }
 
     }
 
-    public static void manageQuestions(){
+    void writeObject() throws Exception {
 
+        FileOutputStream fos = new FileOutputStream("src/quiz/questions.txt");
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
 
+        oos.writeObject(questionList);
+        oos.flush();
+        oos.close();
 
-     testList.set(0,new Quiz("TESTING","testanwser1","testanswer2","testanswer3"));
-        System.out.println(testList);
     }
 
+    void readObject() throws Exception { // if (questList.length() <= )
 
+        FileInputStream fis = new FileInputStream("src/quiz/questions.txt");
+        ObjectInputStream ois = new ObjectInputStream(fis);
+
+        questionList = (LinkedList<String>) ois.readObject();
+        ois.close();
+
+    }
+
+    public void pause() {
+        System.out.println("\n> Tryck ENTER för att fortsätta < ");
+        new java.util.Scanner(System.in).nextLine();
+    }
+
+    void questionWithNr() {
+        for (int i = 0; i < questionList.size(); i++) {
+            System.out.println(i + ". " + questionList.get(i));
+        }
+    }
 }
-
-
